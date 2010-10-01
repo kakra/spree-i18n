@@ -6,7 +6,7 @@ namespace :spree do
     task :refresh do
       puts "Fetching latest Spree locale file to #{language_root}"
       exec %(
-        curl -Lo '#{language_root}/en_spree.yml' http://github.com/railsdog/spree/tree/master/config/locales/en_spree.yml?raw=true
+        curl -Lo '#{language_root}/en_spree.yml' http://github.com/railsdog/spree/raw/master/core/config/locales/en_spree.yml
       )      
     end
     
@@ -14,8 +14,7 @@ namespace :spree do
     task :sync => :environment do                                    
       puts "Starting syncronization..."
       words = get_translation_keys(language_root)
-      Dir["#{language_root}*.yml"].each do |filename|
-        next unless filename.match('_spree')
+      Dir["#{language_root}/*_spree.yml"].each do |filename|
         basename = File.basename(filename, '_spree.yml')
         (comments, other) = read_file(filename, basename)
         words.each { |k,v| other[k] ||= words[k] }                     #Initializing hash variable as empty if it does not exist
